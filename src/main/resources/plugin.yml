@@ -1,0 +1,13 @@
+name: ${project.name}
+version: ${project.version}
+main: it.multicoredev.pvps.PvPSwitch
+author: LoreSchaeffer
+description: ${project.description}
+api-version: 1.13
+website: ${project.url}
+prefix: PvP
+
+commands:
+  pvp:
+    usage: /pvp <on|off|toggle|status|reload>
+    description: Toggle PvP on or off or show the current status.
