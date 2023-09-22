@@ -14,7 +14,6 @@ This is a simple plugin to toggle PvP for players.
 - Lightweight.
 - Customizable messages with rich formatting. [Click here to see more.](https://github.com/MultiCoreNetwork/MBCore/blob/dev/README.md#chat-format)
 - PlaceholderAPI support. (_%pvpswitch_pvp_status%_)
-- MVdWPlaceholderAPI support. (_{pvpswitch_pvp_status}_)
 
 ## Commands & Permissions
 - /pvp <on|off|toggle> - (_pvpswitch.pvp_) - Toggle PvP for yourself.
@@ -24,40 +23,41 @@ This is a simple plugin to toggle PvP for players.
 
 _pvpswitch.ignore-cooldown_ - Ignore the PvP cooldown.
 
-## Default config
-```yaml
-# This is the default state of PvP when a player join the server.
-# PvP will be reverted to this every time a player join the server.
-pvp-default-enabled: true
+## Default config.json
+```json
+{
+  "pvp_default": true,
+  "world_list": [],
+  "blacklist": true,
+  "cooldown": 0
+}
+```
 
-# You can use the following list as a blacklist or whitelist of worlds.
-# In this list you can add the worlds in which you want the plugin enabled (if whitelist) or disabled (if blacklist).
-world-list: [ ]
-is-world-list-blacklist: true
+### Explanation:
+- **pvp_default**: This is the default state of PvP when a player join the server (PvP will be reverted to this every time a player join the server).
+- **world_list**: You can use the following list as a blacklist or whitelist of worlds in which you want the plugin enabled (if whitelist) or disabled (if blacklist).
+- **blacklist**: If true, the world_list will be used as a blacklist, if false, the world_list will be used as a whitelist.
+- **cooldown**: The cooldown in seconds to toggle PvP.
 
-# The pvp command can be used only every x seconds.
-pvp-command-cooldown: 0
-
-# The messages used by the plugin. You can change them as you like.
-# You can use MBCore rich formatting. For more info read this: https://github.com/MultiCoreNetwork/MBCore/blob/dev/README.md#chat-format.
-# The strings between the curly braces are tags replaced by the plugin.
-# {name} tag can be replaced by {displayname}.
-messages:
-  command-usage: "&cIncorrect usage! &eUse /pvp <enable|disable|toggle|status|reload>"
-  cooldown: "&cYou can use this command once every {cooldown} seconds."
-  insufficient-perms: "&cYou don't have permission to use this command!"
-  not-player: "&cYou must be a player to use this command!"
-  player-not-found: "&cPlayer not found!"
-  pvp-disabled: "&cPvP is disabled!"
-  pvp-disabled-damager: "&cYou have PvP disabled!"
-  pvp-disabled-other: "&cPvP is disabled for &e{name}&c!"
-  pvp-disabled-target: "&c{name} has PvP disabled!"
-  pvp-enabled: "&aPvP is enabled!"
-  pvp-enabled-other: "&aPvP is enabled for &e{name}&a!"
-  pvp-status-enabled: "&aPvP enabled"
-  pvp-status-disabled: "&cPvP disabled"
-  reload: "&hPvPSwitch has been reloaded!"
-  world-blacklisted: "&cYou can't toggle PvP in this world!"
+## Default messages.json
+```json
+{
+  "command_usage": "&cIncorrect usage! &eUse /pvp <enable|disable|toggle|status|reload>",
+  "cooldown": "&cYou can use this command once every {cooldown} seconds.",
+  "insufficient_perms": "&cYou don't have permission to use this command!",
+  "not_player": "&cYou must be a player to use this command!",
+  "player_not_found": "&cPlayer not found!",
+  "pvp_disabled": "&cPvP is disabled!",
+  "pvp_disabled_striker": "&cYou have PvP disabled!",
+  "pvp_disabled_other": "&cPvP is disabled for &e{name}&c!",
+  "pvp_disabled_target": "&c{name} has PvP disabled!",
+  "pvp_enabled": "&aPvP is enabled!",
+  "pvp_enabled_other": "&aPvP is enabled for &e{name}&a!",
+  "pvp_status_enabled": "&aPvP enabled",
+  "pvp_status_disabled": "&cPvP disabled",
+  "reload": "&hPvPSwitch has been reloaded!",
+  "world_blacklisted": "&cYou can't toggle PvP in this world!"
+}
 ```
 
 ## Contributing

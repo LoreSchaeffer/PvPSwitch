@@ -1,11 +1,12 @@
 package it.multicoredev.pvps;
 
-import it.multicoredev.mbcore.spigot.chat.Chat;
-import it.multicoredev.mclib.yaml.Configuration;
+import it.multicoredev.mbcore.spigot.Chat;
+import it.multicoredev.mclib.json.GsonHelper;
 import it.multicoredev.pvps.listeners.JoinQuitListener;
 import it.multicoredev.pvps.listeners.PvPListener;
-import it.multicoredev.pvps.placeholders.MVdWPlaceholders;
 import it.multicoredev.pvps.placeholders.PAPIPlaceholders;
+import it.multicoredev.pvps.storage.Config;
+import it.multicoredev.pvps.storage.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -41,7 +42,9 @@ import java.util.Map;
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class PvPSwitch extends JavaPlugin {
-    public Configuration config;
+    private static final GsonHelper GSON = new GsonHelper();
+    public Config config;
+    public Messages messages;
     private final Map<Player, Boolean> pvpStatus = new HashMap<>();
     private final Map<Player, Long> cmdCooldown = new HashMap<>();
     private BukkitTask cleaner;
@@ -56,11 +59,24 @@ public class PvPSwitch extends JavaPlugin {
             }
         }
 
-        config = new Configuration(new File(getDataFolder(), "config.yml"), getResource("config.yml"));
+        File configFile = new File(getDataFolder(), "config.json");
+
         try {
-            config.autoload();
+            config = GSON.autoload(configFile, new Config().init(), Config.class);
         } catch (IOException e) {
-            Chat.severe("&4Could not load/create config.yml!");
+            Chat.severe("&4Could not load config.json!");
+            e.printStackTrace();
+            onDisable();
+            return;
+        }
+
+        File messagesFile = new File(getDataFolder(), "messages.json");
+
+        try {
+            messages = GSON.autoload(messagesFile, new Messages().init(), Messages.class);
+        } catch (IOException e) {
+            Chat.severe("&4Could not load messages.json!");
+            e.printStackTrace();
             onDisable();
             return;
         }
@@ -72,10 +88,10 @@ public class PvPSwitch extends JavaPlugin {
         getCommand("pvp").setExecutor(cmd);
         getCommand("pvp").setTabCompleter(cmd);
 
-        if (config.getInt("pvp-command-cooldown") > 0) {
+        if (config.getCooldown() > 0) {
             cleaner = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
                 long now = new Date().getTime();
-                int cooldown = config.getInt("pvp-command-cooldown");
+                int cooldown = config.getCooldown();
 
                 cmdCooldown.forEach((player, time) -> {
                     if (time - now > cooldown) cmdCooldown.remove(player);
@@ -85,10 +101,6 @@ public class PvPSwitch extends JavaPlugin {
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PAPIPlaceholders(this).register();
-        }
-
-        if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
-            MVdWPlaceholders.registerMVdWPlaceholders(this);
         }
 
         Chat.info("&2PvPSwitch enabled!");
@@ -108,7 +120,7 @@ public class PvPSwitch extends JavaPlugin {
 
     public boolean hasPvPEnabled(Player player) {
         if (pvpStatus.containsKey(player)) return pvpStatus.get(player);
-        return config.getBoolean("pvp-default-enabled");
+        return config.getPvpDefault();
     }
 
     public boolean hasPvPEnabled(OfflinePlayer player) {
@@ -116,7 +128,7 @@ public class PvPSwitch extends JavaPlugin {
             if (p.getUniqueId().equals(player.getUniqueId())) return pvpStatus.get(p);
         }
 
-        return config.getBoolean("pvp-default-enabled");
+        return config.getPvpDefault();
     }
 
     public void setPvPStatus(Player player, boolean enabled) {
@@ -131,7 +143,7 @@ public class PvPSwitch extends JavaPlugin {
         if (!(sender instanceof Player)) return false;
 
         if (cmdCooldown.containsKey(sender)) {
-            return new Date().getTime() - cmdCooldown.get(sender) / 1000 < config.getInt("pvp-cooldown");
+            return new Date().getTime() - cmdCooldown.get(sender) / 1000 < config.getCooldown();
         }
 
         return false;
@@ -148,6 +160,6 @@ public class PvPSwitch extends JavaPlugin {
 
     public boolean isWorldListed(Player player) {
         String playerWorld = player.getWorld().getName();
-        return config.getStringList("world-list").stream().anyMatch(world -> world.equalsIgnoreCase(playerWorld));
+        return config.getWorldList().stream().anyMatch(world -> world.equalsIgnoreCase(playerWorld));
     }
 }

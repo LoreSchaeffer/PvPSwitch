@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -35,7 +35,7 @@ public class JoinQuitListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        plugin.setPvPStatus(event.getPlayer(), plugin.config.getBoolean("pvp-default-enabled"));
+        plugin.setPvPStatus(event.getPlayer(), plugin.config.getPvpDefault());
     }
 
     @EventHandler

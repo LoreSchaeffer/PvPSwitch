@@ -1,13 +1,13 @@
 package it.multicoredev.pvps.placeholders;
 
-import it.multicoredev.mbcore.spigot.chat.Chat;
+import it.multicoredev.mbcore.spigot.Chat;
 import it.multicoredev.pvps.PvPSwitch;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -56,8 +56,8 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String identifier) {
         if (identifier.equals("pvp_status")) {
-            if (plugin.hasPvPEnabled(player)) return Chat.toLegacyText(Chat.getTranslated(plugin.config.getString("messages.pvp-status-enabled")));
-            else return Chat.toLegacyText(Chat.getTranslated(plugin.config.getString("messages.pvp-status-disabled")));
+            if (plugin.hasPvPEnabled(player)) return Chat.getTranslated(plugin.messages.getPvpStatusEnabled());
+            else return Chat.getTranslated(plugin.messages.getPvpStatusDisabled());
         }
 
         return null;

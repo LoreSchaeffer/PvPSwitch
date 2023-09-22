@@ -1,6 +1,6 @@
 package it.multicoredev.pvps;
 
-import it.multicoredev.mbcore.spigot.chat.Chat;
+import it.multicoredev.mbcore.spigot.Chat;
 import it.multicoredev.mbcore.spigot.util.TabCompleterUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -43,62 +43,62 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("pvpswitch.pvp")) {
-            Chat.send(plugin.config.getString("messages.insufficient-perms"), sender);
+            Chat.send(plugin.messages.getInsufficientPerms(), sender);
             return true;
         }
 
         if (args.length == 0) {
-            Chat.send(plugin.config.getString("messages.command-usage"), sender);
+            Chat.send(plugin.messages.getCommandUsage(), sender);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("on")) {
             if (args.length == 1) {
                 if (!(sender instanceof Player)) {
-                    Chat.send(plugin.config.getString("messages.not-player"), sender);
+                    Chat.send(plugin.messages.getNotPlayer(), sender);
                     return true;
                 }
 
                 Player player = (Player) sender;
 
                 if (plugin.hasCooldown(player) && !player.hasPermission("pvpswitch.ignore-cooldown")) {
-                    Chat.send(plugin.config.getString("messages.cooldown").replace("{cooldown}", String.valueOf(plugin.config.getInt("pvp-command-cooldown"))), sender);
+                    Chat.send(plugin.messages.getCooldown().replace("{cooldown}", String.valueOf(plugin.config.getCooldown())), sender);
                     return true;
                 }
 
                 if (!worldCheck(player, player)) return true;
 
                 plugin.setPvPStatus(player, true);
-                Chat.send(plugin.config.getString("messages.pvp-enabled"), sender);
+                Chat.send(plugin.messages.getPvpEnabled(), sender);
 
-                if (plugin.config.getInt("pvp-command-cooldown") > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
+                if (plugin.config.getCooldown() > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
             } else {
                 if (!sender.hasPermission("pvpswitch.pvp.others")) {
-                    Chat.send(plugin.config.getString("messages.insufficient-perms"), sender);
+                    Chat.send(plugin.messages.getInsufficientPerms(), sender);
                     return true;
                 }
 
                 if (plugin.hasCooldown(sender) && !sender.hasPermission("pvpswitch.ignore-cooldown")) {
-                    Chat.send(plugin.config.getString("messages.cooldown").replace("{cooldown}", String.valueOf(plugin.config.getInt("pvp-command-cooldown"))), sender);
+                    Chat.send(plugin.messages.getCooldown().replace("{cooldown}", String.valueOf(plugin.config.getCooldown())), sender);
                     return true;
                 }
 
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    Chat.send(plugin.config.getString("messages.player-not-found"), sender);
+                    Chat.send(plugin.messages.getPlayerNotFound(), sender);
                     return true;
                 }
 
                 if (!worldCheck(target, sender)) return true;
 
                 plugin.setPvPStatus(target, true);
-                Chat.send(plugin.config.getString("messages.pvp-enabled"), target);
-                Chat.send(plugin.config.getString("messages.pvp-enabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                Chat.send(plugin.messages.getPvpEnabled(), target);
+                Chat.send(plugin.messages.getPvpEnabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
             }
         } else if (args[0].equalsIgnoreCase("off")) {
             if (args.length == 1) {
                 if (!(sender instanceof Player)) {
-                    Chat.send(plugin.config.getString("messages.not-player"), sender);
+                    Chat.send(plugin.messages.getNotPlayer(), sender);
                     return true;
                 }
 
@@ -107,36 +107,36 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
                 if (!worldCheck(player, player)) return true;
 
                 plugin.setPvPStatus(player, false);
-                Chat.send(plugin.config.getString("messages.pvp-disabled"), sender);
+                Chat.send(plugin.messages.getPvpDisabled(), sender);
 
-                if (plugin.config.getInt("pvp-command-cooldown") > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
+                if (plugin.config.getCooldown() > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
             } else {
                 if (!sender.hasPermission("pvpswitch.pvp.others")) {
-                    Chat.send(plugin.config.getString("messages.insufficient-perms"), sender);
+                    Chat.send(plugin.messages.getInsufficientPerms(), sender);
                     return true;
                 }
 
                 if (plugin.hasCooldown(sender) && !sender.hasPermission("pvpswitch.ignore-cooldown")) {
-                    Chat.send(plugin.config.getString("messages.cooldown").replace("{cooldown}", String.valueOf(plugin.config.getInt("pvp-command-cooldown"))), sender);
+                    Chat.send(plugin.messages.getCooldown().replace("{cooldown}", String.valueOf(plugin.config.getCooldown())), sender);
                     return true;
                 }
 
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    Chat.send(plugin.config.getString("messages.player-not-found"), sender);
+                    Chat.send(plugin.messages.getPlayerNotFound(), sender);
                     return true;
                 }
 
                 if (!worldCheck(target, sender)) return true;
 
                 plugin.setPvPStatus(target, false);
-                Chat.send(plugin.config.getString("messages.pvp-disabled"), target);
-                Chat.send(plugin.config.getString("messages.pvp-disabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                Chat.send(plugin.messages.getPvpDisabled(), target);
+                Chat.send(plugin.messages.getPvpDisabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
             }
         } else if (args[0].equalsIgnoreCase("toggle")) {
             if (args.length == 1) {
                 if (!(sender instanceof Player)) {
-                    Chat.send(plugin.config.getString("messages.not-player"), sender);
+                    Chat.send(plugin.messages.getNotPlayer(), sender);
                     return true;
                 }
 
@@ -146,24 +146,24 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
 
                 boolean enabled = !plugin.hasPvPEnabled(player);
                 plugin.setPvPStatus(player, enabled);
-                if (enabled) Chat.send(plugin.config.getString("messages.pvp-enabled"), sender);
-                else Chat.send(plugin.config.getString("messages.pvp-disabled"), sender);
+                if (enabled) Chat.send(plugin.messages.getPvpEnabled(), sender);
+                else Chat.send(plugin.messages.getPvpDisabled(), sender);
 
-                if (plugin.config.getInt("pvp-command-cooldown") > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
+                if (plugin.config.getCooldown() > 0 && !player.hasPermission("pvpswitch.pvp.ignore-cooldown")) plugin.setCooldown(player);
             } else {
                 if (!sender.hasPermission("pvpswitch.pvp.others")) {
-                    Chat.send(plugin.config.getString("messages.insufficient-perms"), sender);
+                    Chat.send(plugin.messages.getInsufficientPerms(), sender);
                     return true;
                 }
 
                 if (plugin.hasCooldown(sender) && !sender.hasPermission("pvpswitch.ignore-cooldown")) {
-                    Chat.send(plugin.config.getString("messages.cooldown").replace("{cooldown}", String.valueOf(plugin.config.getInt("pvp-command-cooldown"))), sender);
+                    Chat.send(plugin.messages.getCooldown().replace("{cooldown}", String.valueOf(plugin.config.getCooldown())), sender);
                     return true;
                 }
 
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    Chat.send(plugin.config.getString("messages.player-not-found"), sender);
+                    Chat.send(plugin.messages.getPlayerNotFound(), sender);
                     return true;
                 }
 
@@ -172,17 +172,17 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
                 boolean enabled = !plugin.hasPvPEnabled(target);
                 plugin.setPvPStatus(target, enabled);
                 if (enabled) {
-                    Chat.send(plugin.config.getString("messages.pvp-enabled"), target);
-                    Chat.send(plugin.config.getString("messages.pvp-enabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                    Chat.send(plugin.messages.getPvpEnabled(), target);
+                    Chat.send(plugin.messages.getPvpEnabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
                 } else {
-                    Chat.send(plugin.config.getString("messages.pvp-disabled"), target);
-                    Chat.send(plugin.config.getString("messages.pvp-disabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                    Chat.send(plugin.messages.getPvpDisabled(), target);
+                    Chat.send(plugin.messages.getPvpDisabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
                 }
             }
         } else if (args[0].equalsIgnoreCase("status")) {
             if (args.length == 1) {
                 if (!(sender instanceof Player)) {
-                    Chat.send(plugin.config.getString("messages.not-player"), sender);
+                    Chat.send(plugin.messages.getNotPlayer(), sender);
                     return true;
                 }
 
@@ -190,37 +190,35 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
 
                 if (!worldCheck(player, player)) return true;
 
-                if (plugin.hasPvPEnabled(player)) Chat.send(plugin.config.getString("messages.pvp-enabled"), sender);
-                else Chat.send(plugin.config.getString("messages.pvp-disabled"), sender);
+                if (plugin.hasPvPEnabled(player)) Chat.send(plugin.messages.getPvpEnabled(), sender);
+                else Chat.send(plugin.messages.getPvpDisabled(), sender);
             } else {
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    Chat.send(plugin.config.getString("messages.player-not-found"), sender);
+                    Chat.send(plugin.messages.getPlayerNotFound(), sender);
                     return true;
                 }
 
                 if (!worldCheck(target, sender)) return true;
 
                 if (!plugin.hasPvPEnabled(target)) {
-                    Chat.send(plugin.config.getString("messages.pvp-enabled"), target);
-                    Chat.send(plugin.config.getString("messages.pvp-enabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                    Chat.send(plugin.messages.getPvpEnabled(), target);
+                    Chat.send(plugin.messages.getPvpEnabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
                 } else {
-                    Chat.send(plugin.config.getString("messages.pvp-disabled"), target);
-                    Chat.send(plugin.config.getString("messages.pvp-disabled-other").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
+                    Chat.send(plugin.messages.getPvpDisabled(), target);
+                    Chat.send(plugin.messages.getPvpDisabledOther().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), sender);
                 }
             }
         } else if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("pvpswitch.reload")) {
-                Chat.send(plugin.config.getString("messages.insufficient-perms"), sender);
+                Chat.send(plugin.messages.getInsufficientPerms(), sender);
                 return true;
             }
 
             plugin.onDisable();
             plugin.onEnable();
-            Chat.send(plugin.config.getString("messages.reload"), sender);
-        } else {
-            Chat.send(plugin.config.getString("messages.command-usage"), sender);
-        }
+            Chat.send(plugin.messages.getReload(), sender);
+        } else Chat.send(plugin.messages.getCommandUsage(), sender);
 
         return true;
     }
@@ -243,14 +241,14 @@ public class PvpCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean worldCheck(Player target, CommandSender sender) {
-        if (plugin.config.getBoolean("is-world-list-blacklist")) {
+        if (plugin.config.isBlacklist()) {
             if (plugin.isWorldListed(target)) {
-                Chat.send(plugin.config.getString("messages.world-blacklisted"), sender);
+                Chat.send(plugin.messages.getWorldBlacklisted(), sender);
                 return false;
             }
         } else {
             if (!plugin.isWorldListed(target)) {
-                Chat.send(plugin.config.getString("messages.world-blacklisted"), sender);
+                Chat.send(plugin.messages.getWorldBlacklisted(), sender);
                 return false;
             }
         }
