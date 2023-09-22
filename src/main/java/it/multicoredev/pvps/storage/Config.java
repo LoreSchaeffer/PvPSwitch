@@ -1,11 +1,13 @@
-package it.multicoredev.pvps.placeholders;
+package it.multicoredev.pvps.storage;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
-import it.multicoredev.mbcore.spigot.chat.Chat;
-import it.multicoredev.pvps.PvPSwitch;
+import com.google.gson.annotations.SerializedName;
+import it.multicoredev.mclib.json.JsonConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -24,11 +26,37 @@ import it.multicoredev.pvps.PvPSwitch;
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class MVdWPlaceholders {
-    public static void registerMVdWPlaceholders(PvPSwitch plugin) {
-        PlaceholderAPI.registerPlaceholder(plugin, "pvpswitch_pvp_status", e -> {
-            if (plugin.hasPvPEnabled(e.getPlayer())) return Chat.toLegacyText(Chat.getTranslated(plugin.config.getString("messages.pvp-status-enabled")));
-            else return Chat.toLegacyText(Chat.getTranslated(plugin.config.getString("messages.pvp-status-disabled")));
-        });
+public class Config extends JsonConfig {
+    @SerializedName("pvp_default")
+    private Boolean pvpDefault;
+    @SerializedName("world_list")
+    private List<String> worldList;
+    @SerializedName("blacklist")
+    private Boolean isBlacklist;
+    private Integer cooldown;
+
+    @Override
+    public Config init() {
+        if (pvpDefault == null) pvpDefault = true;
+        if (worldList == null) worldList = new ArrayList<>();
+        if (isBlacklist == null) isBlacklist = true;
+        if (cooldown == null) cooldown = 0;
+        return this;
+    }
+
+    public Boolean getPvpDefault() {
+        return pvpDefault;
+    }
+
+    public List<String> getWorldList() {
+        return worldList;
+    }
+
+    public Boolean isBlacklist() {
+        return isBlacklist;
+    }
+
+    public Integer getCooldown() {
+        return cooldown;
     }
 }

@@ -1,6 +1,6 @@
 package it.multicoredev.pvps.listeners;
 
-import it.multicoredev.mbcore.spigot.chat.Chat;
+import it.multicoredev.mbcore.spigot.Chat;
 import it.multicoredev.pvps.PvPSwitch;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ import java.util.Collection;
 import static org.bukkit.potion.PotionEffectType.*;
 
 /**
- * Copyright © 2022 by Lorenzo Magni
+ * Copyright © 2023 by Lorenzo Magni
  * This file is part of PvPSwitch.
  * PvPSwitch is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
@@ -51,7 +51,7 @@ public class PvPListener implements Listener {
 
         Player target = (Player) event.getEntity();
 
-        if (plugin.config.getBoolean("is-world-list-blacklist")) {
+        if (plugin.config.isBlacklist()) {
             if (plugin.isWorldListed(target)) return;
         } else {
             if (!plugin.isWorldListed(target)) return;
@@ -86,7 +86,7 @@ public class PvPListener implements Listener {
 
         Player target = (Player) event.getEntity();
 
-        if (plugin.config.getBoolean("is-world-list-blacklist")) {
+        if (plugin.config.isBlacklist()) {
             if (plugin.isWorldListed(target)) return;
         } else {
             if (!plugin.isWorldListed(target)) return;
@@ -105,7 +105,7 @@ public class PvPListener implements Listener {
 
         Player target = (Player) event.getEntity();
 
-        if (plugin.config.getBoolean("is-world-list-blacklist")) {
+        if (plugin.config.isBlacklist()) {
             if (plugin.isWorldListed(target)) return;
         } else {
             if (!plugin.isWorldListed(target)) return;
@@ -128,7 +128,7 @@ public class PvPListener implements Listener {
             if (!(entity instanceof Player)) return;
             Player target = (Player) entity;
 
-            if (plugin.config.getBoolean("is-world-list-blacklist")) {
+            if (plugin.config.isBlacklist()) {
                 if (plugin.isWorldListed(target)) return;
             } else {
                 if (!plugin.isWorldListed(target)) return;
@@ -152,7 +152,7 @@ public class PvPListener implements Listener {
 
         Player target = (Player) event.getCaught();
 
-        if (plugin.config.getBoolean("is-world-list-blacklist")) {
+        if (plugin.config.isBlacklist()) {
             if (plugin.isWorldListed(target)) return;
         } else {
             if (!plugin.isWorldListed(target)) return;
@@ -175,14 +175,14 @@ public class PvPListener implements Listener {
         event.getAreaEffectCloud().setMetadata("POTION", new FixedMetadataValue(plugin, event.getEntity().getEffects()));
     }
 
-    private boolean checkPvP(Player target, Player damager) {
+    private boolean checkPvP(Player target, Player striker) {
         if (!plugin.hasPvPEnabled(target)) {
-            Chat.send(plugin.config.getString("messages.pvp-disabled-target").replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), damager);
+            Chat.send(plugin.messages.getPvpDisabledTarget().replace("{name}", target.getName()).replace("{displayname}", target.getDisplayName()), striker);
             return true;
         }
 
-        if (!plugin.hasPvPEnabled(damager)) {
-            Chat.send(plugin.config.getString("messages.pvp-disabled-damager"), damager);
+        if (!plugin.hasPvPEnabled(striker)) {
+            Chat.send(plugin.messages.getPvpDisabledStriker(), striker);
             return true;
         }
 
