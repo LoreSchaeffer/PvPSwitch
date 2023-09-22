@@ -1,5 +1,5 @@
 # PvPSwitch
-[![GitHub version](https://img.shields.io/badge/release-1.0.0-blue)](https://github.com/LoreSchaeffer/PvPSwitch)
+[![GitHub version](https://img.shields.io/badge/release-1.0.1-blue)](https://github.com/LoreSchaeffer/PvPSwitch)
 [![GitHub stars](https://img.shields.io/github/stars/LoreSchaeffer/PvPSwitch)](https://github.com/LoreSchaeffer/PvPSwitch)
 [![GitHub issues](https://img.shields.io/github/issues/LoreSchaeffer/PvPSwitch)](https://github.com/LoreSchaeffer/PvPSwitch/issues)
 
